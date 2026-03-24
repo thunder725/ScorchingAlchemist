@@ -1,0 +1,151 @@
+fileFormatVersion: 2
+guid: 39848db867bd75a4fb1ebd7d7952b0ce
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Gear
+    100002: //RootNode
+    100004: Shackle
+    100006: StaticPart
+    100008: Heart
+    100010: Monography Platform
+    100012: Shield
+    100014: StaticBody
+    100016: TailEnd
+    100018: TailSegment
+    100020: Wings
+    100022: HeartHighlight
+    100024: ShackleHighlight
+    400000: Gear
+    400002: //RootNode
+    400004: Shackle
+    400006: StaticPart
+    400008: Heart
+    400010: Monography Platform
+    400012: Shield
+    400014: StaticBody
+    400016: TailEnd
+    400018: TailSegment
+    400020: Wings
+    400022: HeartHighlight
+    400024: ShackleHighlight
+    2100000: Material.001
+    2100002: Material.003
+    2300000: Gear
+    2300002: Shackle
+    2300004: StaticPart
+    2300006: Heart
+    2300008: Monography Platform
+    2300010: Shield
+    2300012: StaticBody
+    2300014: TailEnd
+    2300016: TailSegment
+    2300018: Wings
+    2300020: //RootNode
+    2300022: HeartHighlight
+    2300024: ShackleHighlight
+    3300000: Gear
+    3300002: Shackle
+    3300004: StaticPart
+    3300006: Heart
+    3300008: Monography Platform
+    3300010: Shield
+    3300012: StaticBody
+    3300014: TailEnd
+    3300016: TailSegment
+    3300018: Wings
+    3300020: //RootNode
+    3300022: HeartHighlight
+    3300024: ShackleHighlight
+    4300000: StaticPart
+    4300002: Shackle
+    4300004: Gear
+    4300006: StaticBody
+    4300008: Heart
+    4300010: Monography Platform
+    4300012: Shield
+    4300014: Wings
+    4300016: TailSegment
+    4300018: TailEnd
+    4300020: ShackleHighlight
+    4300022: HeartHighlight
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: mod.bundle
+  assetBundleVariant: 
