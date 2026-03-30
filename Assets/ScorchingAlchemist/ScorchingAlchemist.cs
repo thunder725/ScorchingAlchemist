@@ -31,6 +31,7 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
     // Mesh & Object Transform Data
     [SerializeField] float shacklesRotationSpeed, gearRotationSpeed;
+    bool haltGearRotationDueToStrike;
 
     [SerializeField] float tailVerticalRotationFrequency, tailVerticalRotationAmplitude, tailHorizontalRotationFrequency, tailHorizontalRotationAmplitude;
     Vector3 tailSegmentFirstRotation = new Vector3(0, 0, 0);
@@ -119,6 +120,8 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
         InitializePuzzle();
 
+        haltGearRotationDueToStrike = false;
+
     }
 
 
@@ -151,6 +154,8 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
         if (currentModuleState != moduleState.Shackles) { return; }
 
 
+        heartSelectable.AddInteractionPunch();
+
         // Is the correct Shackle pressed?
         if ( CharToInt(finalSword.shacklesOrder[currentNumberOfShacklesPressed]) == _shackleIndex)
         {
@@ -164,7 +169,6 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
             currentNumberOfShacklesPressed++;
 
             // Visual & Audio Feedback
-            heartSelectable.AddInteractionPunch();
             moduleAudio.PlaySoundAtTransform(ShackleSound.name, transform);
 
 
@@ -182,6 +186,7 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
         {
             CustomLog("!i! STRIKE !i! Shackles number {0} got pressed. That is incorrect. !i! STRIKE !i!", _shackleIndex);
             thisModule.HandleStrike();
+            StartCoroutine(GearStrikeHalt());
         }
     }
 
@@ -229,6 +234,15 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
         }
 
         yield return null;
+    }
+
+    IEnumerator GearStrikeHalt()
+    {
+        haltGearRotationDueToStrike = true;
+
+        yield return new WaitForSeconds(.8f);
+        haltGearRotationDueToStrike = false;
+
     }
 
     /// <summary> Converts a character into an Int. For String, try int.Parse(string) </summary>
@@ -385,6 +399,7 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
     void RotateShackles()
     {
+
         // Shackles don't exist outside of Shackles State
         if (currentModuleState != moduleState.Shackles) { return; }
 
@@ -401,6 +416,9 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
     void RotateGears()
     {
+        // Halt Rotation on strike
+        if (haltGearRotationDueToStrike) { return; }
+
         // Compute Rotation Offset for the last frame
         Vector3 _rotationThisFrame = new Vector3(Time.time * gearRotationSpeed, 0, 90);
 
