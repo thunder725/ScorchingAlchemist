@@ -6,6 +6,14 @@ using KModkit;
 using System.Linq;
 
 
+/* Rule Seed Support:
+ * 
+ * Only change the Sword's Shackle Order
+ * This is gonna be done at runtime to avoid messing with all that messy Serialization business:
+ * On Puzzle Initialization, gather the Shackles Order, shuffle them according to the ruleseed rules, write them back
+ */
+
+
 
 public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver {
 
@@ -14,6 +22,9 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     [SerializeField] KMBombInfo bombInfo;
     [SerializeField] KMBombModule thisModule;
     [SerializeField] KMAudio moduleAudio;
+    [SerializeField] KMRuleSeedable ruleseedManager;
+    int ruleseedSeed;
+    MonoRandom ruleseedRandom;
 
     // Mesh & Object References
 	[SerializeField] GameObject[] shackles;
@@ -117,6 +128,9 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     void Start()
     {
         CustomLog("Initializing module");
+
+        ruleseedRandom = ruleseedManager.GetRNG();
+        ruleseedSeed = ruleseedRandom.Seed;
 
         InitializePuzzle();
 
@@ -261,6 +275,8 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     {
         // Phase 1 : Shield
 
+        ApplyRuleSeed();
+
         DetermineTailRotation();
 
         DetermineGearRotations();
@@ -277,6 +293,62 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
         SummonMonographyPlatforms();
 
         DetermineTargetHeartPresses();
+    }
+
+    void ApplyRuleSeed()
+    {
+        // Randomize Shackle Order depending on Ruleseed
+
+        // Default (ruleseed 1) should not change because some values have been hand-picked
+        // Like Zeo Sychros being 4321 as it's the ultimate Sword, Desert Seeker being 1234 since it's the main sword you get,
+        if (ruleseedSeed == 1)
+        { return; }
+
+
+        CustomLog("Detected Rule Seed {0}. Shuffling the Shackle Sequences.", ruleseedSeed);
+
+        // Ruleseed javascript uses the Fisher-Yates algorithm to shuffle arrays
+        // So for ease of everything we're gonna copy that
+
+
+        // First, save all shackle orders in a separate array
+        string[] _shackleOrders = new string[24];
+
+        for (int i = 0; i < 24; i++)
+        {
+            _shackleOrders[i] = allSwords[i].shacklesOrder;
+        }
+
+        // Then, shuffle it using Fisher-Yates
+        // Step through the Array in reverse
+        int _i = 24;
+        int _index;
+        string _value;
+        while (_i > 1)
+        {
+            // Get an Index from ruleseed, within [0, _i[
+            _index = ruleseedRandom.Next(0, _i);
+            _i--;
+
+            // Get the value from that Index
+            _value = _shackleOrders[_index];
+            // Replace value at that index by the last value (we're stepping through)
+            _shackleOrders[_index] = _shackleOrders[_i];
+            // Replace the last value by that Index
+            _shackleOrders[_i] = _value;
+        }
+
+
+        // Then, re-apply those Shackle Orders to the Swords
+        Sword _swordToReplace;
+        for (int i = 0; i < 24; i++)
+        {
+            _swordToReplace = allSwords[i];
+            _swordToReplace.shacklesOrder = _shackleOrders[i];
+            allSwords[i] = _swordToReplace;
+
+            CustomLog("Sword {0} received Shackle Order {1}", _swordToReplace.name, _swordToReplace.shacklesOrder);
+        }
     }
 
     void DetermineTailRotation()

@@ -367,6 +367,7 @@ GameObject:
   - component: {fileID: 114208841272621400}
   - component: {fileID: 114696624720405076}
   - component: {fileID: 114564591150755824}
+  - component: {fileID: 114854024153511698}
   m_Layer: 0
   m_Name: ScorchingAlchemistPrefab
   m_TagString: Untagged
@@ -608,7 +609,7 @@ Transform:
   m_GameObject: {fileID: 1576297763709222}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.055, y: 0.006, z: 0.045}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
   m_Children:
   - {fileID: 4735681948717064}
   m_Father: {fileID: 4493146328930614}
@@ -662,7 +663,7 @@ Transform:
   m_GameObject: {fileID: 1110396840194208}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.055, y: 0.006, z: -0.045}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
   m_Children:
   - {fileID: 4948333811536470}
   m_Father: {fileID: 4493146328930614}
@@ -702,7 +703,7 @@ Transform:
   m_GameObject: {fileID: 1010097986615252}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.055, y: 0.006, z: -0.045}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
   m_Children:
   - {fileID: 4190318402468300}
   m_Father: {fileID: 4493146328930614}
@@ -828,7 +829,7 @@ Transform:
   m_GameObject: {fileID: 1688512134917404}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.055, y: 0.006, z: 0.045}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1, z: 1.2}
   m_Children:
   - {fileID: 4642575320087968}
   m_Father: {fileID: 4493146328930614}
@@ -1026,13 +1027,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1745136502670340}
-  m_LocalRotation: {x: -0.3535534, y: 0.3535534, z: 0.61237246, w: 0.61237246}
+  m_LocalRotation: {x: -0.5, y: 0, z: 0, w: 0.8660254}
   m_LocalPosition: {x: 0, y: 0.0195, z: 0.044}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4968342880302858}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -60.000004, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: -60.000004, y: 0, z: 0}
 --- !u!23 &23076187767370648
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -2374,6 +2375,7 @@ MonoBehaviour:
   bombInfo: {fileID: 114497678476821442}
   thisModule: {fileID: 114208841272621400}
   moduleAudio: {fileID: 114766087948012328}
+  ruleseedManager: {fileID: 114854024153511698}
   shackles:
   - {fileID: 1010097986615252}
   - {fileID: 1110396840194208}
@@ -2740,6 +2742,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/Diffuse
+--- !u!114 &114854024153511698
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1589639358081898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114870246807547332
 MonoBehaviour:
   m_ObjectHideFlags: 1

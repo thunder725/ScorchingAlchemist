@@ -14,7 +14,7 @@ MonoBehaviour:
   id: ScorchingAlchemist
   title: Scorching Alchemist
   author: thunder725
-  description: 'Scorching Alchemist - 1.1
+  description: 'Scorching Alchemist - 1.2
 
 
     Fight against the Scorching Alchemist and use the correct weapon to defeat it.
@@ -40,7 +40,12 @@ MonoBehaviour:
 
     - Made Shackles bigger
 
-    - Added visual feedbacks on Strikes'
+    - Added visual feedbacks on Strikes
+
+
+    =-= 1.2
+
+    - Added Ruleseed Support'
   version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: f335ca7a0c2f83b4b894a3d226f8f17b, type: 3}
