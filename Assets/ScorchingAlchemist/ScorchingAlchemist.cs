@@ -4,13 +4,18 @@ using System;
 using UnityEngine;
 using KModkit;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 
 /* Rule Seed Support:
  * 
- * Only change the Sword's Shackle Order
+ * Change the Sword's Shackle Order
  * This is gonna be done at runtime to avoid messing with all that messy Serialization business:
  * On Puzzle Initialization, gather the Shackles Order, shuffle them according to the ruleseed rules, write them back
+ * 
+ * Also shuffle the numbers used for the Gear Rotations
+ * 
+ * Also also shuffle the multiplication
  */
 
 
@@ -23,8 +28,6 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     [SerializeField] KMBombModule thisModule;
     [SerializeField] KMAudio moduleAudio;
     [SerializeField] KMRuleSeedable ruleseedManager;
-    int ruleseedSeed;
-    MonoRandom ruleseedRandom;
 
     // Mesh & Object References
 	[SerializeField] GameObject[] shackles;
@@ -63,6 +66,23 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     moduleState currentModuleState;
     bool isLeftGearTurningUp, isRightGearTurningUp;
     int gearRotationFactor;
+
+
+    int[] RuleseedGearRotationValues;
+    int RuleseedGearMultiplicationFunctionValue;
+    string[] RuleseedGeatMultiplicationLog = new string[9]
+    {
+        "the number of Ports",
+        "the number of Batteries",
+        "the number of Indicators",
+        "the number of Port Plates",
+        "the number of Battery Holders",
+        "the number of odd digits in the Serial Number",
+        "the number of even digits in the Serial Number",
+        "the last digit of the Serial Number",
+        "the first digit of the Serial Number"
+    };
+
 
     [System.Serializable] public struct Sword
     {
@@ -128,9 +148,6 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
     void Start()
     {
         CustomLog("Initializing module");
-
-        ruleseedRandom = ruleseedManager.GetRNG();
-        ruleseedSeed = ruleseedRandom.Seed;
 
         InitializePuzzle();
 
@@ -297,15 +314,18 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
     void ApplyRuleSeed()
     {
-        // Randomize Shackle Order depending on Ruleseed
+        MonoRandom Rng = ruleseedManager.GetRNG();
+
+        CustomLog("Using Ruleseed {0}:", Rng.Seed);
 
         // Default (ruleseed 1) should not change because some values have been hand-picked
         // Like Zeo Sychros being 4321 as it's the ultimate Sword, Desert Seeker being 1234 since it's the main sword you get,
-        if (ruleseedSeed == 1)
-        { return; }
-
-
-        CustomLog("Detected Rule Seed {0}. Shuffling the Shackle Sequences.", ruleseedSeed);
+        if (Rng.Seed == 1)
+        {
+            RuleseedGearRotationValues = new int[3] { 8, 4, 1 };
+            RuleseedGearMultiplicationFunctionValue = 0;
+            return;
+        }
 
         // Ruleseed javascript uses the Fisher-Yates algorithm to shuffle arrays
         // So for ease of everything we're gonna copy that
@@ -313,30 +333,13 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
         // First, save all shackle orders in a separate array
         string[] _shackleOrders = new string[24];
-
         for (int i = 0; i < 24; i++)
         {
             _shackleOrders[i] = allSwords[i].shacklesOrder;
         }
 
-        // Then, shuffle it using Fisher-Yates
-        // Step through the Array in reverse
-        int _i = 24;
-        int _index;
-        string _value;
-        while (_i > 1)
-        {
-            // Get an Index from ruleseed, within [0, _i[
-            _index = ruleseedRandom.Next(0, _i);
-            _i--;
-
-            // Get the value from that Index
-            _value = _shackleOrders[_index];
-            // Replace value at that index by the last value (we're stepping through)
-            _shackleOrders[_index] = _shackleOrders[_i];
-            // Replace the last value by that Index
-            _shackleOrders[_i] = _value;
-        }
+        // Shuffle
+        Rng.ShuffleFisherYates(_shackleOrders);
 
 
         // Then, re-apply those Shackle Orders to the Swords
@@ -347,8 +350,17 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
             _swordToReplace.shacklesOrder = _shackleOrders[i];
             allSwords[i] = _swordToReplace;
 
-            CustomLog("Sword {0} received Shackle Order {1}", _swordToReplace.name, _swordToReplace.shacklesOrder);
+            Debug.LogFormat("<Scorching Alchemist #{0}> Sword {1} received Shackle Order {2}", moduleId, _swordToReplace.name, _swordToReplace.shacklesOrder);
         }
+
+
+
+        // After that, do the regular shuffles
+        RuleseedGearRotationValues = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Rng.ShuffleFisherYates(RuleseedGearRotationValues);
+
+        RuleseedGearMultiplicationFunctionValue = Rng.Next(0, RuleseedGeatMultiplicationLog.Length);
+        Debug.LogFormat("<Scorching Alchemist #{0}> Gear Multiplication will use {1}", moduleId, RuleseedGeatMultiplicationLog[RuleseedGearMultiplicationFunctionValue]);
     }
 
     void DetermineTailRotation()
@@ -372,15 +384,15 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
         // Determine Gear Movement Factor
         if (isLeftGearTurningUp && isRightGearTurningUp)
         {
-            gearRotationFactor = 8;
+            gearRotationFactor = RuleseedGearRotationValues[0];
         }
         else if (isLeftGearTurningUp || isRightGearTurningUp)
         {
-            gearRotationFactor = 4;
+            gearRotationFactor = RuleseedGearRotationValues[1];
         }
         else
         {
-            gearRotationFactor = 1;
+            gearRotationFactor = RuleseedGearRotationValues[2];
         }
 
 
@@ -406,20 +418,38 @@ public class ScorchingAlchemist : MonoBehaviour, ISerializationCallbackReceiver 
 
     void DetermineFinishingSword()
     {
-        // Get Port Count
-        int _numberOfPorts = bombInfo.GetPortCount();
-        if (_numberOfPorts == 0)
+        // This multiplier is Ruleseeded!
+
+        Func<int>[] GearMultiplierFunctions = new Func<int>[9]
         {
-            _numberOfPorts = 1;
-            CustomLog("There are 0 ports on the bomb, however it will be treated as 1.");
+            () => bombInfo.GetPortCount(),
+            () => bombInfo.GetBatteryCount(),
+            () => bombInfo.GetIndicators().Count(),
+            () => bombInfo.GetPortPlateCount(),
+            () => bombInfo.GetBatteryHolderCount(),
+            () => Regex.Matches(bombInfo.GetSerialNumber(), "[13579]").Count,
+            () => Regex.Matches(bombInfo.GetSerialNumber(), "[02468]").Count,
+            () => bombInfo.GetSerialNumberNumbers().Last(),
+            () => bombInfo.GetSerialNumberNumbers().First(),
+        };
+
+
+        int multiplier = GearMultiplierFunctions[RuleseedGearMultiplicationFunctionValue].Invoke();
+        
+
+        // Get Port Count
+        if (multiplier == 0)
+        {
+            multiplier = 1;
+            CustomLog("{0} is {1}. It will be treated as 1 however.", RuleseedGeatMultiplicationLog[RuleseedGearMultiplicationFunctionValue], multiplier);
         }
         else
         {
-            CustomLog("There are {0} ports on the bomb", _numberOfPorts);
+            CustomLog("{0} is {1}", RuleseedGeatMultiplicationLog[RuleseedGearMultiplicationFunctionValue], multiplier);
         }
 
         // Get signed total movement
-        int _totalMovement = _numberOfPorts * (isTailHorizontal ? 1 : -1) * gearRotationFactor;
+        int _totalMovement = multiplier * (isTailHorizontal ? 1 : -1) * gearRotationFactor;
         CustomLog("Movement in the WEAPONS Table will be of {0} steps {1}.", Mathf.Abs(_totalMovement), isTailHorizontal ? "Down" : "Up");
 
         // Move in the table
